@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import skypro.dokerandtestcont.DTO.EmployeeDTO;
+import skypro.dokerandtestcont.DTO.EmployeeFullInfo;
 import skypro.dokerandtestcont.DTO.EmployeeReport;
 import skypro.dokerandtestcont.pojo.Employee;
 import skypro.dokerandtestcont.repository.EmployeeRepository;
