@@ -14,15 +14,12 @@ public class ReportDTO implements Serializable {
     private Integer id;
     private String file;
 
-
-
     public static ReportDTO fromReport(Report report) {
         ReportDTO reportDTO = new ReportDTO();
         reportDTO.setId(report.getId());
         reportDTO.setFile(report.getFile());
         return reportDTO;
     }
-
     public Report toReport() {
         Report report = new Report();
         report.setId(this.getId());

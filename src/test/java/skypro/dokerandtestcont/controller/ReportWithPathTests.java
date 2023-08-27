@@ -9,11 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import skypro.dokerandtestcont.pojo.Employee;
 import skypro.dokerandtestcont.pojo.Position;
 import skypro.dokerandtestcont.repository.EmployeeRepository;
@@ -24,7 +30,15 @@ import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ReportWithPathTests {
+
+    @Container
+    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
+            .withUsername("postgres")
+            .withPassword("1758");
+
     @Autowired
     MockMvc mockMvc;
 
@@ -36,6 +50,13 @@ public class ReportWithPathTests {
 
     @Autowired
     private ReportWithPathService reportWithPathService;
+
+    @DynamicPropertySource
+    static void postgresProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
 
 
     @Test
@@ -60,7 +81,6 @@ public class ReportWithPathTests {
     }
 
     void addEmployeeListInRepository() {
-        employeeRepository.deleteAll();
         Position position = new Position(1, "position-1");
         Position position2 = new Position(2, "position-2");
         positionRepository.save(position);
@@ -72,5 +92,4 @@ public class ReportWithPathTests {
         );
         employeeRepository.saveAll(employeeList);
     }
-
 }

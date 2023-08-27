@@ -3,7 +3,6 @@ package skypro.dokerandtestcont.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -13,20 +12,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import skypro.dokerandtestcont.DTO.EmployeeDTO;
 import skypro.dokerandtestcont.DTO.PositionDTO;
 import skypro.dokerandtestcont.pojo.Employee;
 import skypro.dokerandtestcont.pojo.Position;
 import skypro.dokerandtestcont.repository.EmployeeRepository;
 import skypro.dokerandtestcont.repository.PositionRepository;
-
 import java.util.List;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class EmployeeTests {
+
+    @Container
+    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
+            .withUsername("postgres")
+            .withPassword("1758");
 
     @Autowired
     MockMvc mockMvc;
@@ -37,6 +48,12 @@ public class EmployeeTests {
     @Autowired
     private PositionRepository positionRepository;
 
+    @DynamicPropertySource
+    static void postgresProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
 
 
 
@@ -44,7 +61,6 @@ public class EmployeeTests {
     @WithMockUser(username = "admin", roles = "ADMIN", password = "admin1234")
     void givenNoUsersInDatabase_whenUserAdded_thenStatusOK() throws Exception {
 
-        employeeRepository.deleteAll();
         positionRepository.save(new Position(1, "position_1"));
         JSONObject employee = new JSONObject();
         employee.put("name", "Ivan");
@@ -99,7 +115,6 @@ public class EmployeeTests {
     }
 
     void addEmployeeListInRepository() {
-        employeeRepository.deleteAll();
         Position position = new Position(1, "position-1");
         Position position2 = new Position(2, "position-2");
         positionRepository.save(position);
@@ -263,7 +278,6 @@ public class EmployeeTests {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN", password = "admin1234")
     void whenBDIsEmpty_getStatus404() throws Exception {
-        employeeRepository.deleteAll();
 //        проверка get методов на выбрасывание исключения и возвращение 404 статуса
         mockMvc.perform(get("/employee/salary/max"))
                 .andExpect(status().isBadRequest());
