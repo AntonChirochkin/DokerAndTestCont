@@ -1,6 +1,6 @@
 package skypro.dokerandtestcont.DTO;
-
 import lombok.*;
+
 
 @AllArgsConstructor
 @Getter
