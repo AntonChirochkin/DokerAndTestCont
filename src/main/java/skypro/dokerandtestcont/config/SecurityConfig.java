@@ -29,7 +29,6 @@ import javax.sql.DataSource;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserDetailsServiceAutoConfiguration userDetailsService;
 
     @Bean
     public DaoAuthenticationProvider authProvider(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
@@ -50,14 +49,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public DaoAuthenticationProvider authProvider(PasswordEncoder passwordEncoder) {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userDetailsService);
-//        authProvider.setPasswordEncoder(passwordEncoder);
-//        return authProvider;
-//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
