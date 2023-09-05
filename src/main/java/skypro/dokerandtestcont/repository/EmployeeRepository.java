@@ -1,8 +1,8 @@
 package skypro.dokerandtestcont.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import skypro.dokerandtestcont.DTO.EmployeeFullInfo;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import skypro.dokerandtestcont.DTO.EmployeeReport;
 import skypro.dokerandtestcont.pojo.Employee;
@@ -11,13 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
-    @Query("SELECT new skypro.dokerandtestcont.DTO." +
-            "EmployeeFullInfo(e.name , e.salary , p.name) " +
-            "FROM Employee e join fetch Position p " +
-            "WHERE e.position = p")
+
+    @Query("SELECT  new skypro.dokerandtestcont.DTO.EmployeeFullInfo(e.name, e.salary, p.name) FROM Employee e join e.position p")
     List<EmployeeFullInfo> findAllEmployeeFullInfo();
+
     @Query("SELECT new skypro.dokerandtestcont.DTO." +
             "EmployeeFullInfo(e.name , e.salary , p.name) " +
             "FROM Employee e join fetch Position p " +
@@ -28,9 +27,9 @@ public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
 
     @Query("SELECT new skypro.dokerandtestcont.DTO." +
             "EmployeeFullInfo(e.name , e.salary , p.name) " +
-            "FROM Employee e join fetch Position p " +
-            "WHERE e.position = p AND p.id=?1")
+            "FROM Employee e join e.position p WHERE p.id=?1")
     List<EmployeeFullInfo> findEmployeeByPosition(Integer position);
+
 
     @Query("SELECT new skypro.dokerandtestcont.DTO." +
             "EmployeeReport(e.department , COUNT(e.name) , MIN(e.salary), max(e.salary), avg(e.salary)) " +

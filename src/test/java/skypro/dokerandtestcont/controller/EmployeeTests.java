@@ -35,7 +35,7 @@ import java.util.List;
 public class EmployeeTests {
 
     @Container
-    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
+    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:persic")
             .withUsername("postgres")
             .withPassword("1758");
 
@@ -95,7 +95,7 @@ public class EmployeeTests {
 
     }
 
-    @Test
+     @Test    // 1 тест
     @WithMockUser(username = "admin", roles = "ADMIN", password = "admin1234")
     void whenGetEmployees_thenEmptyJsonArray() throws Exception {
         mockMvc.perform(get("/employee"))
@@ -170,7 +170,7 @@ public class EmployeeTests {
                 .andExpect(jsonPath("$[0].name").value("Anna"));
     }
 
-    @Test
+    @Test // 2 тест
     @WithMockUser(username = "admin", roles = "ADMIN", password = "admin1234")
     void getEmployeesByPosition() throws Exception {
         addEmployeeListInRepository();
@@ -275,7 +275,7 @@ public class EmployeeTests {
                 .andExpect(jsonPath("$.name").value("Petr"));
     }
 
-    @Test
+    @Test // 3 тест
     @WithMockUser(username = "admin", roles = "ADMIN", password = "admin1234")
     void whenBDIsEmpty_getStatus404() throws Exception {
 //        проверка get методов на выбрасывание исключения и возвращение 404 статуса

@@ -1,8 +1,6 @@
 package skypro.dokerandtestcont.DTO;
 import lombok.*;
 
-
-@AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,6 +10,11 @@ public class EmployeeFullInfo {
     private int salary;
     private String positionName;
 
+    public EmployeeFullInfo(String name, int salary, String positionName) {
+        this.name = name;
+        this.salary = salary;
+        this.positionName = positionName;
+    }
     @Override
     public String toString() {
         return "EmployeeFullInfo{" +
@@ -20,4 +23,5 @@ public class EmployeeFullInfo {
                 ", positionName='" + positionName + '\'' +
                 '}';
     }
+
 }

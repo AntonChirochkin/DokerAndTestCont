@@ -40,6 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     public List<EmployeeFullInfo> getAllEmployees() {
         logger.info("Was invoked method for getting all Employees ");
+        List<Employee> employeeList = employeeRepository.findAll();
         List <EmployeeFullInfo> employeeFullInfoList= employeeRepository.findAllEmployeeFullInfo();
         logger.debug("Received the list of employees {}", employeeFullInfoList);
         return employeeFullInfoList;
